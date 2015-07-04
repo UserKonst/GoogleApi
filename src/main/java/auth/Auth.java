@@ -34,7 +34,7 @@ public class Auth {
      * Application name.
      */
     private static final String APPLICATION_NAME
-            = "Drive API Java Quickstart";
+            = "Report";
 
     /**
      * Directory to store user credentials.
@@ -96,12 +96,12 @@ public class Auth {
         GoogleAuthorizationCodeFlow flow
                 = new GoogleAuthorizationCodeFlow.Builder(
                         HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-               // .setDataStoreFactory(DATA_STORE_FACTORY)
+                .setDataStoreFactory(DATA_STORE_FACTORY)
                 .setAccessType("offline")
                 .build();
 
         Credential credential = new AuthorizationCodeInstalledApp(
-                flow, new LocalServerReceiver()).authorize("kostyan.vk");
+                flow, new LocalServerReceiver()).authorize("user");
 
         System.out.println(
                 "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
