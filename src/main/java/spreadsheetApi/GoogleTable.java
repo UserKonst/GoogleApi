@@ -149,7 +149,7 @@ public class GoogleTable {
         return worksheets;
     }
 
-    public WorksheetEntry findWorsheet(SpreadsheetEntry sp, String sheetName) throws Exception {
+    public WorksheetEntry findWorksheet(SpreadsheetEntry sp, String sheetName) throws Exception {
 
         List<WorksheetEntry> entries = sp.getWorksheets();
 
@@ -168,25 +168,13 @@ public class GoogleTable {
         return null;
     }
 
-    public boolean addWorksheet(SpreadsheetEntry sp, String sheetName) throws Exception {
+    public WorksheetEntry addWorksheet(SpreadsheetEntry sp, String sheetName) throws Exception {
 
-        if (findWorsheet(sp, sheetName) != null) {
+        if (findWorksheet(sp, sheetName) != null) {
             System.out.println("Worksheet with name '" + sheetName + "' allready exists!");
-            return false;
+            return null;
         }
 
-        //=====================================================================
-//        SpreadsheetService service
-//                = new SpreadsheetService("Report");
-//
-//        service.setOAuth2Credentials(Auth.authorize());
-        // Define the URL to request.  This should never change.
-        URL SPREADSHEET_FEED_URL = new URL(feedURL);
-
-//        // Make a request to the API and get all spreadsheets.
-//        SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL,
-//                SpreadsheetFeed.class);
-        //=====================================================================
         WorksheetEntry worksheet = new WorksheetEntry();
         worksheet.setTitle(new PlainTextConstruct(sheetName));
         worksheet.setColCount(11);
@@ -195,14 +183,15 @@ public class GoogleTable {
         URL worksheetFeedUrl = sp.getWorksheetFeedUrl();
 
         service.insert(worksheetFeedUrl, worksheet);
-
+        Thread.sleep(5000);
+        
         System.out.println("Added worksheet with name '" + sheetName + "'");
-        return true;
+        return worksheet;
     }
 
     public boolean deleteWorksheet(SpreadsheetEntry sp, String sheetName) throws Exception {
 
-        if (findWorsheet(sp, sheetName) == null) {
+        if (findWorksheet(sp, sheetName) == null) {
             System.out.println(
                     "Worksheet '" + sheetName + "' not found in spreadsheet '"
                     + sp.getTitle().getPlainText() + "'");
@@ -210,7 +199,7 @@ public class GoogleTable {
             return false;
         }
 
-        WorksheetEntry worksheet = findWorsheet(sp, sheetName);
+        WorksheetEntry worksheet = findWorksheet(sp, sheetName);
         worksheet.delete();
 
         System.out.println("Sheet '" + sheetName + "' was deleted from spreadsheet '" + sp.getTitle().getPlainText() + "'!");
